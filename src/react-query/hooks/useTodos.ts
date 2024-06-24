@@ -14,9 +14,14 @@ const useTodos = () => {
 			.then((response) => response.data);
 	};
 
-	return useQuery<Todo[], Error, boolean>({
+	return useQuery<Todo[], Error>({
 		queryKey: ['todos'],
 		queryFn: fetchTodos,
+		// () =>
+		// 	axios
+		// 		.get<Todo[]>('https://jsonplaceholder.typicode.com/todos')
+		// 		.then((response) => response.data),
+		staleTime: 10 * 1000,
 	});
 };
 
