@@ -7,19 +7,33 @@ const TodoForm = () => {
   const queryClient = useQueryClient();
   const addTodo = useMutation<Todo,Error,Todo>({
     mutationFn: (todo: Todo) => axios.post<Todo>('https://jsonplaceholder.typicode.com/todos',todo).then(res => res.data),
+
+    onMutate: (newTodo: Todo) => {
+      queryClient.setQueriesData<Todo[]>(['todos'],(oldData) => {
+        if(oldData) {
+          return [newTodo,...oldData];
+        }
+      });
+    },
+
+
     onSuccess: (savedTodo,newTodo) => {
+
+      queryClient.setQueriesData<Todo[]>(['todos'],(todos) => {
+        return todos?.map((todo) => todo === newTodo ? savedTodo : todo);
+      });
       // APPROACH : 1 Invalidating the CACHE
       // queryClient.invalidateQueries(({
       //   queryKey: ['todos']
       // }));
 
       // APPROACH : 2 updating the data in the cache
-      queryClient.setQueriesData<Todo[]>(['todos'],(oldData) => {
-        if(oldData) {
-          return [savedTodo,...oldData];
-        }
-      });
-      if(ref.current) ref.current.value = "";
+      // queryClient.setQueriesData<Todo[]>(['todos'],(oldData) => {
+      //   if(oldData) {
+      //     return [savedTodo,...oldData];
+      //   }
+      // });
+      // if(ref.current) ref.current.value = "";
     }
   });
 
