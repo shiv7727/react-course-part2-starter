@@ -10,7 +10,7 @@ interface AddTodoContext {
 const TodoForm = () => {
   const queryClient = useQueryClient();
   const addTodo = useMutation<Todo,Error,Todo,AddTodoContext>({
-    mutationFn: (todo: Todo) => axios.post<Todo>('https://jsonplaceholder.typicode.com/todosx',todo).then(res => res.data),
+    mutationFn: (todo: Todo) => axios.post<Todo>('https://jsonplaceholder.typicode.com/todos',todo).then(res => res.data),
 
     onMutate: (newTodo: Todo) => {
       const previousTodos = queryClient.getQueryData<Todo[]>(['todos']) || [];
